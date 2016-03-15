@@ -1,0 +1,180 @@
+WiredTree Shell Training Worksheet
+
+1) By editing the Apache configuration, change your main domain's document root from public_html to public_html2 and move your WordPress site into public_html2 and correctly distill it so cpanel doesn't overwrite your change. Explain how cPanel/WHM manages the Apache configuration file. 
+
+2) Install MailParse PHP extension and provide a phpinfo page on your main domain showing that it is installed.
+
+3) Install Memchached with 64Mb of Cache and enable it in PHP.
+
+4) Upgrade your Apache to 2.4.x and your PHP to 5.5.x via EasyApache
+
+5) Explain what cPanel's phpextensionmgr script does and enable ZendOpcache into a cPanel based server setup using PECL.
+
+6) Explain how cPanel manage's Perl on the server.
+
+7) Open mysql remote access port via CSF (or APF) for both egress and ingress.
+
+8) Remove mod_evasive from your server if present.
+
+9) Run a root kit hunter scan on the server. 
+
+10) Research and implement cPanel Proxy domains on all active accounts on your server via command line. Provide me with URLs of the end result.
+
+11) Package your main cPanel account via command line.
+
+12) Remove your main cPanel account via command line.
+
+13) Restore your main cPanel account via command line to a different IP than the original.  
+    Note any changes or issues that you had with these last three tasks.
+
+14) Where are the cache files located for your cPanel accounts on the file system?  
+
+15) Describe what you see inside your cPanel user's file in the directory from the previous question.
+
+16) Install DoS deflate on your server.  Explain what it does.
+
+17) Firewall off University of Michigan's network range from your server and allow all of Michigan State Universities entire network access to your server via CSF.
+
+18) Without using PHPmyAdmin, export your SQL file for your wordpress install, create a new DB in cPanel and import that SQL dump.
+
+19) Confirm that the office IP range is whitelisted in CSF and Ban this IP (209.59.159.10) via CLI
+
+20) Export your wordpress database to database.sql in your /root directory via command line. Create three new databases via cPanel and then import that database into each one via commandline.
+
+21) Move mysql's temp directory to /var/lib/mysql/tmp.
+
+22) Adjust the MySQL open files limit to 4K.
+
+23) Install PostgreSQL via cPanel's scripts and configure it in the WHM after it is done.  Run EasyApache to add in pgsql support to PHP.
+
+24) Create a cPanel account via the command line with the following information on your main shared IP and email the info to me (jdoss@wiredtree.com <mailto:jdoss@wiredtree.com>) when it is setup. Change YOURNAME to your first name in the hostname below:
+
+domain = YOURNAME.solidadmin.com <http://YOURNAME.solidadmin.com>
+username = jdoss
+password = Generate one
+No frontpage extentions
+Shell Enabled
+CGI enabled
+
+25) Send three test emails via command line to your personal email  address with the -v flag and record one on your worksheet.
+
+26) Use exigrep to find those test emails in the exim_mainlog and record them on your worksheet. Explain 5 of the fields present in each log entry.
+
+27) Setup a cronjob to send an email joe@wiredtree.com with the subject of "OH BABY!!" and a body of "BACON BACON BACON. You know you love it. Love, YOURNAME" where YOURNAME is your name. Make it send every other hour. Once it has sent for 4 hours, please disable the cronjob.
+
+28) Setup a cronjob to remove files out of /tmp that have not been accessed in over 24 hours using tmpwatch.
+
+29) Change any cpanel backup cronjobs to run at 8PM.
+
+30) Setup a cronjob to rsync your main cpanel account's home directory every night at 1AM to /backup/USERNAME where username is the account's username. 
+
+31) Exclude the mail directory from your cpanel backups using the cpanel backup file exclude functionality.
+
+32) Use 'find' to generate a list of all of the error logs on your server
+
+33) Write a for loop in bash to tail each of these error logs
+
+34) Try to use tcpdump on your VPS and explain why it does not work.
+
+35) Run the mysqltuner.pl script and describe the changes you'd make based on its suggestions
+
+36) Write a short script on your workstation (in /usr/local/bin) that lets you run dig +short NS domain.com by simply typing ns domain.com
+
+37) Disable root login to your VPS, move SSH to a non-standard port, and add your user to the wheel group so that you may escalate to root once logged in
+
+38) Generate a list of the directories within / and the disk space that they consume
+
+39) Demonstrate how to run phpinfo() from the command line and grep for the extension directory
+
+40) Grep for your IP in the cpHulk logs. Whitelist your IP address in the cphulk system using the appropriate cpanel script.
+
+41) Run 'ls -l / | grep scripts; rm -f /scripts' and then re-create this symlink. Acquaint yourself with the contents of the scripts directory and read http://docs.cpanel.net/twiki/bin/view/AllDocumentation/WHMDocs/WHMScripts
+
+42) Run 'rm -f /usr/local/lib/php/extensions/no-debug-non-zts-20090626/sqlite.so' then generate a php error log in /root/ by running 'cd /root/; php -v' and resolve the error using cp.
+
+43) If there were multiple .so files missing like in the previous question, how could you potentially resolve them all at once using rsync?
+
+44) Use dcpumonview and describe what you see
+
+45) Explain what ip_conntrack_max / nf_contrack_max does and how you would recognize that the value needs to be raised.
+
+46) Add a logrotate script to rotate domlogs for any .com domains and run logrotate manually to check
+
+47) Change your suPHP log level from info to warn
+
+48) Move your bandwidth logs out of /var/ and into /home/ then create a symlink back to their orignal location.
+
+49) Set Apache to log rewrites and to log them to a separate rewrite.log file.
+
+50) Find out what version of the YAML PERL module is installed
+
+51) Find out what version of cpanel and Red Hat you are running
+
+52) Restrict all accounts on the server to only use the global php.ini file via the suphp configuration.
+
+53) In cpanel, create an account with the domain wiredtree.com and set mail to local. Send a test email to joe@wiredtree.com from the CLI with the verbose flag. Address the error using CLI.
+
+54) Run the command to update or verify the status of your cpanel license.
+
+55) Boost the display limit for pure-ftpd to 10000 items. Where should you make this change so that it will persist through a cPanel update?
+
+56) How would you use find to find local php.ini files containing memory_limit directives? Bonus points if you do it without grep!
+
+57) Use cpanel's spf and dkim installers to add SPF and DKIM entries to your domains' zone files.
+
+58) Stop MySQL, ensure that cpanel can't restart MySQL, then perform a myisamchk repair on your eximstats tables using flags to set a custom temp directory and sort buffer size
+
+59) Remove the exim RPM and then use cpanel to reinstall just exim
+
+60) Add an option to your resolver configuration to rotate your resolvers. Switch to using Google's resolvers.
+
+61) Play around with 'iptraf'. Explain what features are available. Give an example of an issue that iptraf would help you diagnose.
+
+62) Run 'lsof -n | grep deleted' and describe what you see. Compare this to the same command output after a restart of Apache.
+
+63) Double your current open files limit temporarily and then permanently.
+
+64) Find your server's IP addresses using a cpanel script and the ip command
+
+65) Optimize your database tables using the mysqlcheck software
+
+66) Without entering into the MySQL command line, what do you run to see a full list of the currently running MySQL queries?
+
+67) What do you run to see how many tables MySQL has open?
+
+68) Boost MySQL timeout variables in /etc/my.cnf to avoid any potential 'MySQL has gone away' errors
+
+69) Enable the slow query log for MySQL. Logrotate this log every week.
+
+70) Set the maximum emails per hour to 100 and adjust the log file rotaition threshold to 200MB in Tweak Settings, ensuring that you update Tweak Settings with the new values. From the command line.
+
+71) Install Python3 without disturbing cpanel's built in Python2.6 in any way.
+
+72) Install Java on your server and then remove it when you are finished.
+
+73) How would you make it so that cpanel's updates can't change your cronjobs?
+
+74) Modify your bash default bash prompt to include your FQHN
+
+75) Output to the console your current PHP handler settings
+
+76) Install suhosin using a cpanel script besides easy apache and then uninstall it the same way
+
+77) Suspend your account and then unsuspend it.
+
+78) Use awk to print only the file size column of the output of 'ls -lh'
+
+79) Output the results of the above that are in kilobytes to a file called kilo
+
+80) Use sed to change all of the K characters in your kilo file to the word Kilobytes
+
+81) Take a few screenshots or download some images on your workstation so you have some content in the Pictures directory. Use rsync to create a backup of this directory called PicturesBackup.
+
+82) Now use rsync to create a perfect duplicate of your Pictures directory on your VPS in /home/workstationPictures/
+
+83) Use rsync to create a duplicate of your VPS root directory on your local workstation in ~/VPSroot/
+
+84) Use SSH keys to enable future rsyncs between your workstation and your VPS to be done without password prompts
+
+85) Test this by using rsync to copy the /var/cpanel/users/ directory to your workstation in ~/cpanelusers/
+

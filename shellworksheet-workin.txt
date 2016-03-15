@@ -1,0 +1,400 @@
+WiredTree Shell Training Worksheet
+
+1) By editing the Apache configuration, change your main domain's document root from public_html to public_html2 and move your WordPress site into public_html2 and correctly distill it so cpanel doesn't overwrite your change. Explain how cPanel/WHM manages the Apache configuration file. 
+    A.  Conf files moved/located in /usr/local/apache dir
+        
+        /usr/local/apache/conf/httpd.conf  <--DO NOT EDIT. AUTOMATICALLY GENERATED. CHANGES SHOULD BE PLACED IN INCLUDE FILES.
+    
+        ALL MODIFICATIONS must be checked into the configuration system by running:
+        /usr/local/cpanel/bin/apache_conf_distiller --update
+
+        To see if your changes will be conserved, regen the config:
+        /usr/local/cpanel/bin/build_apache_conf
+
+        # To customize a VirtualHost use an include file at the following location
+        # Include "/usr/local/apache/conf/userdata/std/2_4/USER/VHOST/*.conf"
+
+    B.  mkdir -p /usr/local/apache/conf/userdata/std/2_4/wiredtr34/wiredtr34.com/vhost.conf
+
+    C.  echo "DocumentRoot /home/wiredtr34/public_html2" > /usr/local/apache/conf/userdata/std/2_4/wiredtr34/wiredtr34.com/vhost.conf
+
+    D.  /usr/local/cpanel/3rdparty/scripts/rebuildhttpdconf
+
+2) Install MailParse PHP extension and provide a phpinfo page on your main domain showing that it is installed.
+    A.  `pecl install mailparse` failed with mailparse-3.0.1 (depends on php7)
+        `pecl install mailparse-2.1.6` install error (missing re2c)
+        export PATH=$PATH:/usr/local/cpanel/3rdparty/bin
+        `pecl install mailparse-2.1.6` SUCCESS
+
+    B.  vim ~/public_html/test.php
+
+        <?php phpinfo(); ?>
+
+    C.  firefox wiredtr34.com/test.php
+
+3) Install Memchached with 64Mb of Cache and enable it in PHP.
+    A. pecl install memcache
+
+    B. vim /etc/sysconfig/memcached
+        - change Cache size to 64MB from default (32M)
+        
+
+
+4) Upgrade your Apache to 2.4.x and your PHP to 5.5.x via EasyApache
+    A. /usr/local/cpan/scripts/easyapache
+
+5) Explain what cPanel's phpextensionmgr script does and enable ZendOpcache into a cPanel based server setup using PECL.
+    A. phpextensionmgr is a wrapper for PECL
+    B. PHP5.5+ already builds/compiles ZendOpcache
+    C. APCu only compatible for php<=7
+        https://bugs.php.net/bug.php?id=69618
+
+6) Explain how cPanel manage's Perl on the server.
+    A. cPanel uses PECL-wrapper (phpextensionmanager)
+    B. scripts/perlinstaller wrapper for CPANM
+    C. 3rdparty/perl/$(version)/{bin,lib64)
+
+7) Open mysql remote access port via CSF (or APF) for both egress and ingress.
+    A. vim /etc/csf/csf.conf
+    B. TCP_IN="3306"
+       TCP_OUT="3306"
+    C. Restart CSF with `csf -r`
+
+8) Remove mod_evasive from your server if present.
+    A. Check apache modules if mod_evasive is present
+        httpd -M |grep -i evasive
+
+9) Run a root kit hunter scan on the server. 
+    A. `rkhunter -c`
+
+10) Research and implement cPanel Proxy domains on all active accounts on your server via command line. Provide me with URLs of the end result.
+    A.  http://www.v-nessa.net/2008/07/26/setting-up-cpanel-proxies
+        https://documentation.cpanel.net/pages/viewpage.action?pageId=1507619
+        
+        scripts/proxydomains --user=username add
+
+        To do ALL ACCOUNTS on the server execute `proxydomains add`
+
+            # proxydomains add
+            Adding proxy subdomains for all users.
+            This may take several minutes if there are many accounts on the system.
+            jdoss-likes-to-wear-snuggies.com   [jdoss-likes-to-wear-snuggies.com, 96.30.1.154, no changes needed]
+            wiredtr33.com                      [wiredtr33.com, 96.30.1.154, +A@autoconfig, +A@webdisk, +A@whm, +A@webmail, +A@cpanel, +A@cpcalendars, +A@autodiscover, +SRV@_autodiscover._tcp:0 0 443 cpanelemaildiscovery.cpanel.net., +SRV@_caldav._tcp:0 0 2079 ahodzic.wiredtr33.com., +SRV@_caldavs._tcp:0 0 2080 ahodzic.wiredtr33.com., +SRV@_carddav._tcp:0 0 2079 ahodzic.wiredtr33.com., +SRV@_carddavs._tcp:0 0 2080 ahodzic.wiredtr33.com., +TXT@_caldav._tcp:path=/, +TXT@_caldavs._tcp:path=/, +TXT@_carddav._tcp:path=/, +TXT@_carddavs._tcp:path=/, +A@cpcontacts]
+            wiredtr34.com                      [wiredtr34.com, 96.30.1.155, no changes needed]
+            wiredtr35.com                      [wiredtr35.com, 96.30.1.154, no changes needed]
+            wiredtr36.com                      [wiredtr36.com, 96.30.1.154, no changes needed]
+
+11) Package your main cPanel account via command line.
+    https://documentation.cpanel.net/pages/viewpage.action?pageId=17368391
+
+    "You can use the /scripts/pkgacct script to create a cpmove archive for an account. 
+    After you create the cpmove archive, you can transfer the account between servers."
+
+      scripts/pkgacct [args] username destination
+
+12) Remove your main cPanel account via command line.
+    `/usr/local/cpanel/bin/removeacct`
+
+       removeacct: Command line tool to terminate cPanel accounts
+
+        Usage:
+            removeacct <user>
+
+        Options:
+            --force: Bypass confirmation dialog
+            --keepdns: Keep zone files from DNS 
+
+13) Restore your main cPanel account via command line to a different IP than the original.  
+    Note any changes or issues that you had with these last three tasks.
+
+        https://documentation.cpanel.net/display/1152Docs/Restore+Package+Script
+        "You can use the /scripts/restorepkg script to restore a backup archive for a specified account."
+
+            /usr/local/cpanel/bin/restorepkg [--unrestricted] [--restricted] [--force] [--newuser <username>] 
+            [--allow_reseller] [--skipaccount] [--ip=(y|n|custom IP)] 
+            -- [cpuser|/path/to/cpuser-file|/path/to/extracted-cpuser-file|/path/to/incremental_backup]
+
+            --ip               Assign a dedicated IP address. You may specify a particular
+                                IP address, or “y” to have one randomly assigned.
+
+        `# restorepkg --ip=y --allow_reseller /root/myBackups/cpmove-wiredtr.tar.gz`
+        ERROR: Failed to create the account: Your system has run out of available IP addresses, or you do not have permission to use any more IP addresses. (Unable to find an IP address.)
+        `# restorepkg --allow_reseller /root/myBackups/cpmove-wiredtr.tar.gz`
+
+14) Where are the cache files located for your cPanel accounts on the file system?  
+    /var/cpanel/userdata/
+
+15) Describe what you see inside your cPanel user's file in the directory from the previous question.
+      # lsl /var/cpanel/userdata/wiredtr
+          total 28K
+          drwxr-x--- 2 root wiredtr 4.0K Mar 14 12:53 ./
+          drwx--x--x 7 root root    4.0K Mar 14 12:52 ../
+          -rw-r--r-- 1 root root     221 Mar 14 12:53 cache
+          -rw-r--r-- 1 root root     122 Mar 14 12:52 main
+          -rw-r--r-- 1 root root     121 Mar 14 12:52 main.cache
+          -rw-r--r-- 1 root root    1.1K Mar 14 12:53 wiredtr33.com
+          -rw-r--r-- 1 root root    1.1K Mar 14 12:53 wiredtr33.com.cache
+
+16) Install DoS deflate on your server.  Explain what it does.
+
+      `/scripts/easyapache `
+
+      The `mod_deflate` Apache module provides the deflate output filter, which compresses your server's 
+      output before Apache sends data.
+
+      Already installed (static!)
+        `# httpd -M |grep -i deflate`
+            AH00548: NameVirtualHost has no effect and will be removed in the next release /usr/local/apache/conf/httpd.conf:621
+            deflate_module (static)
+
+17) Firewall off University of Michigan's network range from your server and allow all of Michigan State Universities entire network access to your server via CSF.
+
+    csf -d `nslookup msu.edu |awk '/Address/ {print $2;}' |sed 1d`
+    csf -a `nslookup umich.edu |awk '/Address/ {print $2;}' |sed 1d`
+    csf -r
+
+18) Without using PHPmyAdmin, export your SQL file for your wordpress install, create a new DB in cPanel and import that SQL dump.
+    A. Dump
+        mysqldump -p DBNAME > DBNAME.sql
+
+        Fails if no ROOT password; set root password:
+          mysqladmin -uroot password
+
+        Repeat first step
+
+    B. Create New DB and import dump
+        
+        mysql -u root
+        create database dbname;
+        exit
+        mysql dbname < dbdumpfile.sql
+
+19) Confirm that the office IP range is whitelisted in CSF and Ban this IP (209.59.159.10) via CLI
+    vim /etc/csf/csf.{allow,deny}
+
+20) Export your wordpress database to database.sql in your /root directory via command line. Create three new databases via cPanel and then import that database into each one via commandline.
+
+21) Move mysql's temp directory to /var/lib/mysql/tmp.
+    vim /etc/my.cnf
+
+22) Adjust the MySQL open files limit to 4K.
+
+23) Install PostgreSQL via cPanel's scripts and configure it in the WHM after it is done.  Run EasyApache to add in pgsql support to PHP.
+
+24) Create a cPanel account via the command line with the following information on your main shared IP and email the info to me (jdoss@wiredtree.com <mailto:jdoss@wiredtree.com>) when it is setup. Change YOURNAME to your first name in the hostname below:
+
+domain = YOURNAME.solidadmin.com <http://YOURNAME.solidadmin.com>
+username = jdoss
+password = Generate one
+No frontpage extentions
+Shell Enabled
+CGI enabled
+
+    A. /scripts/createacct to create account
+
+       Following 1liner from http://atlas.wiredtree.com:8090/display/~kboyer/One-Liners
+        to generate password:
+       `date +%s | sha256sum | base64 | head -c 16 ; echo`
+
+       Full options needed in order, up to the non-default option:
+       `# createacct amel.solidadmin.com jdoss ZDZlZmYzNjEzYjMx 0 advanced n y n 0 0 0 0 0 0 y`
+
+    B.# /scripts/removeacct jdoss
+        now to  undo my mess
+        (04:35:06 PM) Dan Uber: there is a killacct, but you don't want that
+        (04:36:04 PM) Dan Uber: basically, killacct does not remove the dns information
+        (04:36:21 PM) Dan Uber: removeacct is what you 99% of the time need to use 
+
+25) Send three test emails via command line to your personal email  address with the -v flag and record one on your worksheet.
+      # mail -v -s shell-worksheet ahodzic@wiredtree.com                                           
+      mail -v from commandline 1
+      EOT
+      LOG: MAIN
+        cwd=/usr/local/cpanel 5 args: send-mail -i -v -- ahodzic@wiredtree.com
+      LOG: MAIN
+        <= root@ahodzic.wiredtr33.com U=root P=local S=540 T="shell-worksheet"
+      root@ahodzic [1311 cpanel]# LOG: MAIN
+        cwd=/var/spool/exim 4 args: /usr/sbin/exim -v -Mc 1afbKA-0002jf-AP
+      delivering 1afbKA-0002jf-AP
+      Connecting to spamexperts.wiredtree.com [208.86.159.230]:25 ... connected
+        SMTP<< 220 spamexperts.wiredtree.com ESMTP Exim 4.85-96945 Mon, 14 Mar 2016 17:50:54 -0500
+        SMTP>> EHLO ahodzic.wiredtr33.com
+        SMTP<< 250-spamexperts.wiredtree.com Hello ahodzic.wiredtr33.com [96.30.1.154]
+               250-SIZE
+               250-8BITMIME
+               250-STARTTLS
+               250 HELP
+        SMTP>> STARTTLS
+        SMTP<< 220 TLS go ahead
+        SMTP>> EHLO ahodzic.wiredtr33.com
+        SMTP<< 250-spamexperts.wiredtree.com Hello ahodzic.wiredtr33.com [96.30.1.154]
+               250-SIZE
+               250-8BITMIME
+               250 HELP
+        SMTP>> MAIL FROM:<root@ahodzic.wiredtr33.com> SIZE=1578
+        SMTP<< 250 OK
+        SMTP>> RCPT TO:<ahodzic@wiredtree.com>
+        SMTP<< 250 Accepted
+        SMTP>> DATA
+        SMTP<< 354 Enter message, ending with "." on a line by itself
+        SMTP>> writing message and terminating "."
+        SMTP<< 250 OK id=1afbKA-0002Wr-Ku
+        SMTP>> QUIT
+      LOG: MAIN
+        => ahodzic@wiredtree.com R=lookuphost T=remote_smtp H=spamexperts.wiredtree.com [208.86.159.230] X=TLSv1.2:DHE-RSA-AES256-SHA:256 CV=yes C="250 OK id=1afbKA-0002Wr-Ku"
+      LOG: MAIN
+        Completed
+
+26) Use exigrep to find those test emails in the exim_mainlog and record them on your worksheet. Explain 5 of the fields present in each log entry.
+
+      A. # exigrep "shell" /var/log/exim_mainlog
+      
+      2016-03-14 16:57:09 cwd=/usr/local/cpanel 6 args: send-mail -i -- -s jdoss@wiredtree.com shell-worksheet
+
+2016-03-14 16:57:09 1afaU9-00028t-Mb <= root@ahodzic.wiredtr33.com U=root P=local S=1049 T="shell-worksheet" for -s jdoss@wiredtree.com shell-worksheet
+2016-03-14 16:57:09 1afaU9-00028t-Mb ** shell-worksheet@ahodzic.wiredtr33.com: Unrouteable address
+2016-03-14 16:57:09 1afaU9-00028t-Mb ** -s@ahodzic.wiredtr33.com: Unrouteable address
+2016-03-14 16:57:13 1afaU9-00028t-Mb => jdoss@wiredtree.com R=lookuphost T=remote_smtp H=spamexperts.wiredtree.com [208.86.159.230] X=TLSv1.2:DHE-RSA-AES256-SHA:256 CV=yes C="250 OK id=1afaUA-0007kV-Jl"
+2016-03-14 16:57:14 1afaU9-00028t-Mb Completed
+
+2016-03-14 16:58:37 1afaVZ-00029a-7O <= root@ahodzic.wiredtr33.com U=root P=local S=1007 T="shell-worksheet" for ilmostro7@gmail.com
+2016-03-14 16:58:38 1afaVZ-00029a-7O => ilmostro7@gmail.com R=lookuphost T=remote_smtp H=gmail-smtp-in.l.google.com [74.125.142.26] X=TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128 CV=yes C="250 2.0.0 OK 1457992718 i142si28324303ioi.120 - gsmtp"
+2016-03-14 16:58:38 1afaVZ-00029a-7O Completed
+
+2016-03-14 17:02:22 1afaZB-0002Bl-Dq <= root@ahodzic.wiredtr33.com U=root P=local S=1011 T="shell-worksheet" for ahodzic@wiredtree.com
+2016-03-14 17:02:26 1afaZB-0002Bl-Dq => ahodzic@wiredtree.com R=lookuphost T=remote_smtp H=spamexperts.wiredtree.com [208.86.159.230] X=TLSv1.2:DHE-RSA-AES256-SHA:256 CV=yes C="250 OK id=1afaZD-00085S-8u"
+2016-03-14 17:02:26 1afaZB-0002Bl-Dq Completed
+
+2016-03-14 17:50:54 1afbKA-0002jf-AP <= root@ahodzic.wiredtr33.com U=root P=local S=540 T="shell-worksheet" for ahodzic@wiredtree.com
+2016-03-14 17:50:59 1afbKA-0002jf-AP => ahodzic@wiredtree.com R=lookuphost T=remote_smtp H=spamexperts.wiredtree.com [208.86.159.230] X=TLSv1.2:DHE-RSA-AES256-SHA:256 CV=yes C="250 OK id=1afbKA-0002Wr-Ku"
+2016-03-14 17:50:59 1afbKA-0002jf-AP Completed
+
+2016-03-14 17:54:42 1afbNq-0002lG-Hx <= root@ahodzic.wiredtr33.com U=root P=local S=2088 T="shell-worksheet" for ahodzic@wiredtree.com
+2016-03-14 17:54:43 1afbNq-0002lG-Hx => ahodzic@wiredtree.com R=lookuphost T=remote_smtp H=spamexperts.wiredtree.com [208.86.159.230] X=TLSv1.2:DHE-RSA-AES256-SHA:256 CV=yes C="250 OK id=1afbNq-0002mA-Px"
+2016-03-14 17:54:43 1afbNq-0002lG-Hx Completed
+
+2016-03-14 18:03:57 1afbWn-0002r5-9Q <= root@ahodzic.wiredtr33.com U=root P=local S=1941 T="shell-worksheet" for ilmostro7@gmail.com
+2016-03-14 18:03:57 1afbWn-0002r5-9Q => ilmostro7@gmail.com R=lookuphost T=remote_smtp H=gmail-smtp-in.l.google.com [74.125.70.27] X=TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128 CV=yes C="250 2.0.0 OK 1457996637 w9si20137025igl.96 - gsmtp"
+2016-03-14 18:03:57 1afbWn-0002r5-9Q Completed
+
+
+    I. SMTP - SIMPLE MAIL TRANSFER PROTOCOL: listens on TCP 25; Application Layer;
+
+27) Setup a cronjob to send an email joe@wiredtree.com with the subject of "OH BABY!!" and a body of "BACON BACON BACON. You know you love it. Love, YOURNAME" where YOURNAME is your name. Make it send every other hour. Once it has sent for 4 hours, please disable the cronjob.
+
+28) Setup a cronjob to remove files out of /tmp that have not been accessed in over 24 hours using tmpwatch.
+
+29) Change any cpanel backup cronjobs to run at 8PM.
+
+30) Setup a cronjob to rsync your main cpanel account's home directory every night at 1AM to /backup/USERNAME where username is the account's username. 
+
+31) Exclude the mail directory from your cpanel backups using the cpanel backup file exclude functionality.
+
+32) Use 'find' to generate a list of all of the error logs on your server
+
+33) Write a for loop in bash to tail each of these error logs
+
+34) Try to use tcpdump on your VPS and explain why it does not work.
+
+35) Run the mysqltuner.pl script and describe the changes you'd make based on its suggestions
+
+36) Write a short script on your workstation (in /usr/local/bin) that lets you run dig +short NS domain.com by simply typing ns domain.com
+
+37) Disable root login to your VPS, move SSH to a non-standard port, and add your user to the wheel group so that you may escalate to root once logged in
+
+38) Generate a list of the directories within / and the disk space that they consume
+
+39) Demonstrate how to run phpinfo() from the command line and grep for the extension directory
+
+40) Grep for your IP in the cpHulk logs. Whitelist your IP address in the cphulk system using the appropriate cpanel script.
+
+41) Run 'ls -l / | grep scripts; rm -f /scripts' and then re-create this symlink. Acquaint yourself with the contents of the scripts directory and read http://docs.cpanel.net/twiki/bin/view/AllDocumentation/WHMDocs/WHMScripts
+
+42) Run 'rm -f /usr/local/lib/php/extensions/no-debug-non-zts-20090626/sqlite.so' then generate a php error log in /root/ by running 'cd /root/; php -v' and resolve the error using cp.
+
+43) If there were multiple .so files missing like in the previous question, how could you potentially resolve them all at once using rsync?
+
+44) Use dcpumonview and describe what you see
+
+45) Explain what ip_conntrack_max / nf_contrack_max does and how you would recognize that the value needs to be raised.
+
+46) Add a logrotate script to rotate domlogs for any .com domains and run logrotate manually to check
+
+47) Change your suPHP log level from info to warn
+
+48) Move your bandwidth logs out of /var/ and into /home/ then create a symlink back to their orignal location.
+
+49) Set Apache to log rewrites and to log them to a separate rewrite.log file.
+
+50) Find out what version of the YAML PERL module is installed
+
+51) Find out what version of cpanel and Red Hat you are running
+
+52) Restrict all accounts on the server to only use the global php.ini file via the suphp configuration.
+
+53) In cpanel, create an account with the domain wiredtree.com and set mail to local. Send a test email to joe@wiredtree.com from the CLI with the verbose flag. Address the error using CLI.
+
+54) Run the command to update or verify the status of your cpanel license.
+
+55) Boost the display limit for pure-ftpd to 10000 items. Where should you make this change so that it will persist through a cPanel update?
+
+56) How would you use find to find local php.ini files containing memory_limit directives? Bonus points if you do it without grep!
+
+57) Use cpanel's spf and dkim installers to add SPF and DKIM entries to your domains' zone files.
+
+58) Stop MySQL, ensure that cpanel can't restart MySQL, then perform a myisamchk repair on your eximstats tables using flags to set a custom temp directory and sort buffer size
+
+59) Remove the exim RPM and then use cpanel to reinstall just exim
+
+60) Add an option to your resolver configuration to rotate your resolvers. Switch to using Google's resolvers.
+
+61) Play around with 'iptraf'. Explain what features are available. Give an example of an issue that iptraf would help you diagnose.
+
+62) Run 'lsof -n | grep deleted' and describe what you see. Compare this to the same command output after a restart of Apache.
+
+63) Double your current open files limit temporarily and then permanently.
+
+64) Find your server's IP addresses using a cpanel script and the ip command
+
+65) Optimize your database tables using the mysqlcheck software
+
+66) Without entering into the MySQL command line, what do you run to see a full list of the currently running MySQL queries?
+
+67) What do you run to see how many tables MySQL has open?
+
+68) Boost MySQL timeout variables in /etc/my.cnf to avoid any potential 'MySQL has gone away' errors
+
+69) Enable the slow query log for MySQL. Logrotate this log every week.
+
+70) Set the maximum emails per hour to 100 and adjust the log file rotaition threshold to 200MB in Tweak Settings, ensuring that you update Tweak Settings with the new values. From the command line.
+
+71) Install Python3 without disturbing cpanel's built in Python2.6 in any way.
+
+72) Install Java on your server and then remove it when you are finished.
+
+73) How would you make it so that cpanel's updates can't change your cronjobs?
+
+74) Modify your bash default bash prompt to include your FQHN
+
+75) Output to the console your current PHP handler settings
+
+76) Install suhosin using a cpanel script besides easy apache and then uninstall it the same way
+
+77) Suspend your account and then unsuspend it.
+
+78) Use awk to print only the file size column of the output of 'ls -lh'
+
+79) Output the results of the above that are in kilobytes to a file called kilo
+
+80) Use sed to change all of the K characters in your kilo file to the word Kilobytes
+
+81) Take a few screenshots or download some images on your workstation so you have some content in the Pictures directory. Use rsync to create a backup of this directory called PicturesBackup.
+
+82) Now use rsync to create a perfect duplicate of your Pictures directory on your VPS in /home/workstationPictures/
+
+83) Use rsync to create a duplicate of your VPS root directory on your local workstation in ~/VPSroot/
+
+84) Use SSH keys to enable future rsyncs between your workstation and your VPS to be done without password prompts
+
+85) Test this by using rsync to copy the /var/cpanel/users/ directory to your workstation in ~/cpanelusers/
+

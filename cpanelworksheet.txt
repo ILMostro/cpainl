@@ -1,0 +1,81 @@
+Week 1 WHM/cPanel Activities.  Please detail out how you have done each one of these tasks.
+
+1) Setup 3 package types one being a reseller with 3 different feature sets.
+
+2) Create 1 reseller account and assign it its own nameservers and packages.
+
+3) Create 5 accounts under the reseller account via the WHM for that reseller with 5 different domain names and various packages.
+
+4) Set Exim to run on port 26 along with port 25.
+
+5) Update your email address in the WHM so you receive emails from WHM/cPanel, root and the nobody user.
+
+6) Switch your server to run CGI for both PHP5 and PHP4 via the WHM. Then switch back to suPHP.
+
+7) Change and configure your server to run Courier for the POP and IMAP daemons. Now come to your senses and switch back to Dovecot.
+
+8) Make sure your all of your server's Apache logs are getting rotated via WHM.
+
+9) Configure remote mysql access to your server from our office IP address via WHM.  Test the connection and report your results.
+
+10) Remove clamAV if it is installed on your server via the WHM.  If it is not installed install it.
+
+11) Explain how you would access an accounts' document root in a web browser that's assigned a shared IP address versus a dedicated IP address.
+
+12) Get a trial LiteSpeed license and install LiteSpeed on your server replacing Apache as your httpd daemon.
+
+13) Generate a SSL cert for your main server domain name and install the self signed SSL cert on it.
+
+14) Install WordPress on your main domain.  Detail out the steps that you had to use to do so within your cPanel.
+
+15) Reset all of your server's SSL certs for all WHM/cPanel services. In which situations would this be necessary?
+
+16) Disable the AppConfig registration notifications emails. 
+
+17) Set your server to Automatic (CURRENT tree) cPanel updates and update cpanel.
+
+18) Enable only AWstats on your server.
+
+19) Set the max number of emails that your server can send per hour to 100.
+
+20) Back up your Exim config both locally and on the server, then reset the exim conf and exim ACLs to defaults.
+
+21) Park jdoss-likes-to-wear-snuggies.com on top of your main domain via your domain's cPanel.  Also park google.com.   Report the results.
+
+22) Create an FTP account via cPanel and then try to connect via SCP, SFTP, FTP w/TLS and FTP.  Do the same tests with your main cPanel username.  Report results and reasons for failure.
+
+23) Disable POP3 on your server.
+
+24) Setup 3 addon domains, wiredtreetest1.com, wiredtreetest2.com, wiredtreetest3.com and  out side of your main domain's document root.
+
+25) Give the SSL and non SSL ports for cPanel, WHM and Webmail.
+
+26) Give a list of all open ports on your server and match up the cPanel based services to each port.
+
+27) Create a full cPanel backup of your main site.
+
+28) Use the autofixer script to reset your ssh config via the web browser.
+
+29) Determine where WHM >> DNS Functions » Nameserver IPs gets its information.
+
+30) Install the spamdconf plugin.
+
+31) Ensure that when someone emails a non-existant email account, the email fails to deliver.
+
+32) Ensure that 'nobody' is not allowed to send email (we all know that nobody is a filthy spammer)
+
+33) Make sure that disk quota information is always accurate up to the minute. Look for cache in Tweak Settings.
+
+34) Disable the display of Indexes in Apache
+
+35) Set the start, min spare, and max spare servers to 4, 4, and 8
+
+36) Double the PHP config values for max_input_time, max_execution_time
+
+37) Ensure that only the spamhaus and spamcop RBLs are enabled within Exim
+
+38) Logout of WHM. Try to login using the wrong password enough times to trip cPHulk
+
+39) Try to make the firewall block you. Besides failed logins, what else could trip the firewall?
+
+40) Explain how a client could remove a block on an IP via WHM

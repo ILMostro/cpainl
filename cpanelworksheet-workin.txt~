@@ -1,0 +1,165 @@
+Week 1 WHM/cPanel Activities.  Please detail out how you have done each one of these tasks.
+
+1) Setup 3 package types one being a reseller with 3 different feature sets.
+    a. In the "Packages" submenu on the left of the WebHostManager, select "Add Package".
+    b. For the "reseller" package, precede the name of package w/reseller username and underscore (user_pkg).
+
+2) Create 1 reseller account and assign it its own nameservers and packages.
+    a. WHM dashboard -> Account Functions -> Create a New Account
+
+3) Create 5 accounts under the reseller account via the WHM for that reseller with 5 different domain names and various packages.
+    a. WHM dashboard -> Account Func -> Create New Acct.
+    b. MultiAcct.Func --> Modify/Upgrade Multiple Accounts
+    c. Select checkboxes next to accounts and dropdown select "Reseller"
+
+4) Set Exim to run on port 26 along with port 25.
+    a. Service Conf --> Exim Conf Mngr. --> Adv. Editor --> daemon_smtp_ports
+    b. Service Conf --> Service Mngr. --> Checkboxes Exim Mail Srv
+
+5) Update your email address in the WHM so you receive emails from WHM/cPanel, root and the nobody user.
+
+6) Switch your server to run CGI for both PHP5 and PHP4 via the WHM. Then switch back to suPHP.
+    a. Service Conf --> Config PHP and suEXEC
+
+7) Change and configure your server to run Courier for the POP and IMAP daemons. Now come to your senses and switch back to Dovecot.
+    a. Service Config -->> Mailserver Selection
+
+8) Make sure your all of your server's Apache logs are getting rotated via WHM.
+    a. ServiceConf --> Apache
+
+9) Configure remote mysql access to your server from our office IP address via WHM.  Test the connection and report your results.
+    a. SQL Services --> Add'al Access Hosts
+
+10) Remove clamAV if it is installed on your server via the WHM.  If it is not installed install it.
+    a. cPanel --> Manage Plugins --> (Un)install clamAV
+
+11) Explain how you would access an accounts' document root in a web browser that's assigned a shared IP address versus a dedicated IP address.
+    a. mod_userdir Tweak
+
+12) Get a trial LiteSpeed license and install LiteSpeed on your server replacing Apache as your httpd daemon.
+    a. Plugins --> LiteSpeed WebServer --> License Management
+    b. '-> Switch between Apache and LiteSpeed
+    c. xxxxEnable EasyApache Integrationxxxx
+    d. Build Matching LSPHP
+
+13) Generate a SSL cert for your main server domain name and install the self signed SSL cert on it.
+    a. SSL/TLS --> Generate an SSL Certifacte and Signing Request
+    b. SSL/TLS --> Install an SSL Certificate on a Domain
+    c. IP Address (non-user domains only) required for main (?)
+
+14) Install WordPress on your main domain.  Detail out the steps that you had to use to do so within your cPanel.
+    a. cPanel --> InstallcPAddons Site Software
+
+15) Reset all of your server's SSL certs for all WHM/cPanel services. In which situations would this be necessary?
+    a. Service Configuration --> Manage Service SSL Certificates
+    b. Reset Certificate
+
+16) Disable the AppConfig registration notifications emails. 
+
+17) Set your server to Automatic (CURRENT tree) cPanel updates and update cpanel.
+    a. SERVER CONFIGURATION --> UPDATE PREFERENCES
+
+18) Enable only AWstats on your server.
+    a. SERVER CONF -->> STATISTICS SOFTWARE CONF
+    b. Generators Configuration
+
+19) Set the max number of emails that your server can send per hour to 100.
+    a. SERVER CONF -->> TWEAK -->> MAIL
+    B. MAX HOURLY EMAILS PER DOMAIN unlimited/2000 -->> 100
+
+20) Back up your Exim config both locally and on the server, then reset the exim conf and exim ACLs to defaults.
+    a. SERVICE CONF --> EXIM CONF MANAGER -->> Backup --> Download
+    b. SERVICE CONF --> EXIM CONF MANAGER -->> Backup --> Save on Server
+
+21) Park jdoss-likes-to-wear-snuggies.com on top of your main domain via your domain's cPanel.  Also park google.com.   Report the results.
+    a. Domains -->> Aliases -->> Add Alias jdoss-likes-snfalf.com
+    b. ERROR for "google.com" alias for Common Domains
+
+22) Create an FTP account via cPanel and then try to connect via SCP, SFTP, FTP w/TLS and FTP.  Do the same tests with your main cPanel username.  Report results and reasons for failure.
+
+23) Disable POP3 on your server.
+    a. SERVICE CONFIG --> SERVICE MANAGER
+
+24) Setup 3 addon domains, wiredtreetest1.com, wiredtreetest2.com, wiredtreetest3.com and  out side of your main domain's document root.
+    a. Account Functions -->> Modify Accounts -->> Select user(s) -->> AddOn from 0 to positive int.
+    b. Login as user NOT root/reseller!
+    c. Addon Domains
+    d. Propegate "New Domain Name", <TAB> populates "Subdomain" and "Document Root" fields
+
+25) Give the SSL and non SSL ports for cPanel, WHM and Webmail.
+    a. cPanel: non-SSL --> 2082
+                SSL -->>   2083
+    b. WHM:     non-SSL -->> 2086
+                SSL     -->> 2087
+    c. WebMail  non-SSL -->> 2095
+                SSL     -->> 2096                
+
+26) Give a list of all open ports on your server and match up the cPanel based services to each port.
+    a. nmap -->>
+                PORT     STATE SERVICE
+                21/tcp   open  ftp
+                22/tcp   open  ssh
+                25/tcp   open  smtp
+                26/tcp   open  rsftp
+                53/tcp   open  domain
+                80/tcp   open  http
+                110/tcp  open  pop3
+                143/tcp  open  imap
+                443/tcp  open  https
+                465/tcp  open  smtps
+                587/tcp  open  submission
+                993/tcp  open  imaps
+                995/tcp  open  pop3s
+                3306/tcp open  mysql
+
+27) Create a full cPanel backup of your main site.
+      a. BACKUP -->> ENABLE Backup Status
+    b. HOME -->> FILES -->> BACKUP
+
+28) Use the autofixer script to reset your ssh config via the web browser.
+    a. https://96.30.1.154:2087/cpsess162319089/scripts2/autofixer
+    b. Presented with Input Form
+    c. Enter "sshrestart" Press -->> Go
+    d. Make sure to INCLUDE SESSION COOKEY in address field followed by "scripts2/autofixer"
+
+29) Determine where WHM >> DNS Functions » Nameserver IPs gets its information.
+    a. fgrep -i dns /var/cpanel/users/* | cut -d"/" -f5
+        -- One-liner that Lists Domains and Accounts
+    b. /usr/local/cpanel/etc/zonefiles/
+        -- BIND zone config files
+    c. WHM: SERVICE Config -->> Nameserver Selection
+    d. https://documentation.cpanel.net/pages/viewpage.action?pageId=9897257#HowtoSetUpNameserversinacPanel&WHMEnvironment-common
+
+30) Install the spamdconf plugin.
+    a. E-Mail -->> spamd Startup Config
+
+31) Ensure that when someone emails a non-existant email account, the email fails to deliver.
+    a. E-Mail -->> Default Address -->> "Discard unrouted email"
+
+32) Ensure that 'nobody' is not allowed to send email (we all know that nobody is a filthy spammer)
+    a. SERVER CONFIGURATION --> TWEAK SETTINGS --> MAIL
+    b. Prevent "nobody" from sending mail --> ON
+
+33) Make sure that disk quota information is always accurate up to the minute. Look for cache in Tweak Settings.
+    a. Server Config -->> Initial Quota Setup
+    b. Server Config -->> Tweak Settings -->> Cache disk quota information ->OFF
+
+34) Disable the display of Indexes in Apache
+    a. Advanced -->> Indexes -->> /(current folder) -->> NoIndex
+
+35) Set the start, min spare, and max spare servers to 4, 4, and 8
+
+36) Double the PHP config values for max_input_time, max_execution_time
+    a. Service Config -->> PHP Config Editor
+        -- Initial (unmodified) values:
+        max_input_time:     180
+        max_executi
+
+37) Ensure that only the spamhaus and spamcop RBLs are enabled within Exim
+    a. Service Config -->> Exim Conf Manager -->> RBLs
+
+38) Logout of WHM. Try to login using the wrong password enough times to trip cPHulk
+
+39) Try to make the firewall block you. Besides failed logins, what else could trip the firewall?
+
+40) Explain how a client could remove a block on an IP via WHM
