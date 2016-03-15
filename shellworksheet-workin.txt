@@ -281,20 +281,26 @@ CGI enabled
     I. SMTP - SIMPLE MAIL TRANSFER PROTOCOL: listens on TCP 25; Application Layer;
 
 27) Setup a cronjob to send an email joe@wiredtree.com with the subject of "OH BABY!!" and a body of "BACON BACON BACON. You know you love it. Love, YOURNAME" where YOURNAME is your name. Make it send every other hour. Once it has sent for 4 hours, please disable the cronjob.
+    A. crontab -e 12 13-17/2 * * tue  mail -s "OH BABY!!" body "BACON BACON BACON. You know you love it. Love, Amel" joe@wiredtree.com
+
 
 28) Setup a cronjob to remove files out of /tmp that have not been accessed in over 24 hours using tmpwatch.
 
 29) Change any cpanel backup cronjobs to run at 8PM.
+    A. crontab -e
 
 30) Setup a cronjob to rsync your main cpanel account's home directory every night at 1AM to /backup/USERNAME where username is the account's username. 
 
 31) Exclude the mail directory from your cpanel backups using the cpanel backup file exclude functionality.
 
 32) Use 'find' to generate a list of all of the error logs on your server
+    A. find / -type f -iname '*error*'
 
 33) Write a for loop in bash to tail each of these error logs
+    A. find / -type f -iname '*error*' -exec tail {} \;
 
 34) Try to use tcpdump on your VPS and explain why it does not work.
+    VPS no access to low-level program(s)/hardware
 
 35) Run the mysqltuner.pl script and describe the changes you'd make based on its suggestions
 
@@ -303,8 +309,10 @@ CGI enabled
 37) Disable root login to your VPS, move SSH to a non-standard port, and add your user to the wheel group so that you may escalate to root once logged in
 
 38) Generate a list of the directories within / and the disk space that they consume
+    A. du -sh /*
 
 39) Demonstrate how to run phpinfo() from the command line and grep for the extension directory
+    A. php -i |grep -i extension_dir
 
 40) Grep for your IP in the cpHulk logs. Whitelist your IP address in the cphulk system using the appropriate cpanel script.
 
@@ -315,20 +323,25 @@ CGI enabled
 43) If there were multiple .so files missing like in the previous question, how could you potentially resolve them all at once using rsync?
 
 44) Use dcpumonview and describe what you see
+    A. VPS monitor (usage, etc.)
 
 45) Explain what ip_conntrack_max / nf_contrack_max does and how you would recognize that the value needs to be raised.
+    A. ip_conntrack_max/nf_contrack_max limit maximum number of websock connections
 
 46) Add a logrotate script to rotate domlogs for any .com domains and run logrotate manually to check
 
 47) Change your suPHP log level from info to warn
+    A. vim /opt/suphp/etc/suphp.conf
 
 48) Move your bandwidth logs out of /var/ and into /home/ then create a symlink back to their orignal location.
 
 49) Set Apache to log rewrites and to log them to a separate rewrite.log file.
 
 50) Find out what version of the YAML PERL module is installed
+    A. perl -MYAML -e 'print $YAML::VERSION';
 
 51) Find out what version of cpanel and Red Hat you are running
+    A. cat /usr/local/cpanel/version
 
 52) Restrict all accounts on the server to only use the global php.ini file via the suphp configuration.
 
