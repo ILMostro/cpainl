@@ -354,6 +354,10 @@ CGI enabled
 56) How would you use find to find local php.ini files containing memory_limit directives? Bonus points if you do it without grep!
 
 57) Use cpanel's spf and dkim installers to add SPF and DKIM entries to your domains' zone files.
+    A. /usr/local/cpanel/bin/spf_installer <user> [policy [is-complete [overwrite [preserve]]]]
+        a. updates DNS Zone's SPF records w/specified info for specified user
+
+    B. dkim_keys_install user
 
 58) Stop MySQL, ensure that cpanel can't restart MySQL, then perform a myisamchk repair on your eximstats tables using flags to set a custom temp directory and sort buffer size
 
@@ -374,6 +378,9 @@ CGI enabled
 66) Without entering into the MySQL command line, what do you run to see a full list of the currently running MySQL queries?
 
 67) What do you run to see how many tables MySQL has open?
+    A. mysql -e "status"
+        or
+      mysqladmin status
 
 68) Boost MySQL timeout variables in /etc/my.cnf to avoid any potential 'MySQL has gone away' errors
 
