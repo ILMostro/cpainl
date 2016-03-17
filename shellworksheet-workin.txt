@@ -350,6 +350,10 @@ CGI enabled
 48) Move your bandwidth logs out of /var/ and into /home/ then create a symlink back to their orignal location.
 
 49) Set Apache to log rewrites and to log them to a separate rewrite.log file.
+    A. apache 2.2 might still work in 2.4: RewriteLog "/usr/local/apache/logs/rewrite.log"
+
+    B. Preferred:
+        LogLevel alert rewrite:trace3
 
 50) Find out what version of the YAML PERL module is installed
     A. perl -MYAML -e 'print $YAML::VERSION';
@@ -362,10 +366,13 @@ CGI enabled
 53) In cpanel, create an account with the domain wiredtree.com and set mail to local. Send a test email to joe@wiredtree.com from the CLI with the verbose flag. Address the error using CLI.
 
 54) Run the command to update or verify the status of your cpanel license.
+    A. /usr/local/cpanel/cpkeyclt
 
 55) Boost the display limit for pure-ftpd to 10000 items. Where should you make this change so that it will persist through a cPanel update?
 
 56) How would you use find to find local php.ini files containing memory_limit directives? Bonus points if you do it without grep!
+    A. for i in $(/bin/ls /var/cpanel/users); do find /home/$i/public_html -type f -name php.ini -print -exec grep memory_limit '{}' ';'; done
+    B. (03:25:14 PM) Mark Kusper: find . -type f \( -iname \*ini -or -iname \*cfg -or -iname \*php -or -name \.htaccess -or -iname \*inc \) -exec grep -niHE 'memory[ _]?limit' {} \;
 
 57) Use cpanel's spf and dkim installers to add SPF and DKIM entries to your domains' zone files.
     A. /usr/local/cpanel/bin/spf_installer <user> [policy [is-complete [overwrite [preserve]]]]
@@ -388,8 +395,10 @@ CGI enabled
 64) Find your server's IP addresses using a cpanel script and the ip command
 
 65) Optimize your database tables using the mysqlcheck software
+    A. mysqlcheck -o --all-databases
 
 66) Without entering into the MySQL command line, what do you run to see a full list of the currently running MySQL queries?
+    A. mysql -e "show processlist;"
 
 67) What do you run to see how many tables MySQL has open?
     A. mysql -e "status"
@@ -411,6 +420,7 @@ CGI enabled
 74) Modify your bash default bash prompt to include your FQHN
 
 75) Output to the console your current PHP handler settings
+    A. /usr/local/cpanel/bin/rebuild_phpconf --current
 
 76) Install suhosin using a cpanel script besides easy apache and then uninstall it the same way
 
@@ -432,3 +442,14 @@ CGI enabled
 
 85) Test this by using rsync to copy the /var/cpanel/users/ directory to your workstation in ~/cpanelusers/
 
+
+
+ADDITIONAL:
+
+--- mysql -e "show processlist;" | awk '{print $1}'  | while read line;do mysql -e "kill query ${line};";done
+
+--- stat /usr/bin/mysql /usr/sbin/mysqld; chmod +x /usr/bin/mysql /usr/sbin/mysqld; /etc/init.d/mysql start; stat /usr/bin/mysql /usr/sbin/mysqld
+
+--- stat /usr/bin/mysql /usr/sbin/mysqld; /etc/init.d/mysql stop; chmod -x /usr/bin/mysql /usr/sbin/mysqld; stat /usr/bin/mysql /usr/sbin/mysqld
+
+---

@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenVPN Robust And Highly Flexible Tunneling Application On %I
+After=network.target
+
+[Service]
+PrivateTmp=true
+Type=forking
+Environment="OPENSSL_ENABLE_MD5_VERIFY=1"
+Environment="NSS_HASH_ALG_SUPPORT=+MD5"
+PIDFile=/var/run/openvpn/%i.pid
+ExecStart=/usr/sbin/openvpn --daemon --writepid /var/run/openvpn/%i.pid --cd /etc/openvpn/ --config wiredtree.conf
+
+[Install]
+WantedBy=multi-user.target

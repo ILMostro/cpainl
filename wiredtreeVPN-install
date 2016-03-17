@@ -1,0 +1,31 @@
+#!/bin/env bash
+
+############################################################################
+# WiredTree VPN install script with systemd support
+############################################################################
+
+# set debugging on
+# set -vx
+
+USAGE="Usage: `basename $0` <dirWithVPNclientConf>"
+
+if [[ -z $1 ]]
+then
+  echo $USAGE
+  exit 1
+fi
+
+syswideconfig=/etc/openvpn
+[[ -d $syswideconfig ]] || echo "Is openvpn installed on your system?"  # check openvpn installed
+
+# clientdir="$1 |tr -s"
+clientdir="$1 | sed 's;/$;;'"
+cp -r $clientdir/*.{crt,csr,key,conf} $syswideconfig
+
+cp wiredtreeVPN.service /etc/systemd/system
+
+systemctl enable wiredtreeVPN.service
+sleep 1
+systemctl restart wiredtreeVPN.service
+
+exit
