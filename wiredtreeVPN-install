@@ -4,10 +4,10 @@
 # WiredTree VPN install script with systemd support
 ############################################################################
 
-# set debugging on
-# set -vx
+set debugging on
+set -vx
 
-USAGE="Usage: `basename $0` <dirWithVPNclientConf>"
+USAGE="Usage: `basename $0` <dirWithVPNclientConf>\n\t Please specify the Directory where your VPN files are located."
 
 if [[ -z $1 ]]
 then
@@ -18,9 +18,19 @@ fi
 syswideconfig=/etc/openvpn
 [[ -d $syswideconfig ]] || echo "Is openvpn installed on your system?"  # check openvpn installed
 
+# let's try to get the correct username, as this will be the prefix for name of client.conf file.
+# It will also need to be set/changed within an option INSIDE the conf.file.
+echo "Please enter your username: "
+read NAME
+echo "Thanks, $NAME. Here we go..."
+
 # clientdir="$1 |tr -s"
 clientdir="$1 | sed 's;/$;;'"
 cp -r $clientdir/*.{crt,csr,key,conf} $syswideconfig
+
+# TODO: update script with CORRECT vpn-client.conf file, reflecting username, etc.
+
+
 
 cp wiredtreeVPN.service /etc/systemd/system
 
