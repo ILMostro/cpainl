@@ -4,7 +4,7 @@
 # WiredTree VPN install script with systemd support
 ############################################################################
 
-set debugging on
+# set debugging on
 set -vx
 
 USAGE="Usage: `basename $0` <dirWithVPNclientConf>\n\t Please specify the Directory where your VPN files are located."
