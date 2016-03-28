@@ -4,7 +4,7 @@
 # WiredTree VPN install script with systemd support
 ############################################################################
 
-set debugging on
+# set debugging on
 set -vx
 
 USAGE="Usage: `basename $0` <dirWithVPNclientConf>\n\t Please specify the Directory where your VPN files are located."
@@ -24,9 +24,9 @@ echo "Please enter your username: "
 read NAME
 echo "Thanks, $NAME. Here we go..."
 
-# clientdir="$1 |tr -s"
-clientdir="$1 | sed 's;/$;;'"
-cp -r $clientdir/*.{crt,csr,key,conf} $syswideconfig
+clientdir="$1 "
+# clientdir="$1 | `sed 's;/$;;'`"
+cp \-r "$clientdir/*.{crt,csr,key,conf}" "$syswideconfig"
 
 # TODO: update script with CORRECT vpn-client.conf file, reflecting username, etc.
 # sed '/^cert/d' wiredtree.conf > wiredtree.conf2
@@ -34,6 +34,7 @@ cp -r $clientdir/*.{crt,csr,key,conf} $syswideconfig
 sed 's/
 
 
+[[ -z "/etc/systemd/system/wiredtreeVPN.service" ]]
 cp wiredtreeVPN.service /etc/systemd/system
 
 systemctl enable wiredtreeVPN.service
