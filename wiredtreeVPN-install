@@ -29,7 +29,9 @@ clientdir="$1 | sed 's;/$;;'"
 cp -r $clientdir/*.{crt,csr,key,conf} $syswideconfig
 
 # TODO: update script with CORRECT vpn-client.conf file, reflecting username, etc.
-
+# sed '/^cert/d' wiredtree.conf > wiredtree.conf2
+# sed '/^key/d' wiredtree.conf > wiredtree.conf2
+sed 's/
 
 
 cp wiredtreeVPN.service /etc/systemd/system

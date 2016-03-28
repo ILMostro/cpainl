@@ -1,0 +1,12 @@
+#!/bin/env bash
+
+USAGE="Usage: `basename $0` <domain>"
+
+if ! (($#)); then
+  echo $USAGE
+  exit 1;
+else
+  dig \+short NS $1
+fi
+
+exit
