@@ -15,6 +15,12 @@ then
   exit 1
 fi
 
+# Check root privs w/readonly variable
+if [ "$EUID" -ne 0 ]
+then echo "Please run as root!"
+  exit 1
+fi
+
 syswideconfig=/etc/openvpn
 [[ -d $syswideconfig ]] || echo "Is openvpn installed on your system?"  # check openvpn installed
 
@@ -24,18 +30,24 @@ echo "Please enter your username: "
 read NAME
 echo "Thanks, $NAME. Here we go..."
 
-clientdir="$1 "
+clientdir="$1"
 # clientdir="$1 | `sed 's;/$;;'`"
-cp \-r "$clientdir/*.{crt,csr,key,conf}" "$syswideconfig"
+# cp \-r "$clientdir/*.{crt,csr,key,conf}" "$syswideconfig"
+cp \-r $clientdir/*{crt,csr,key,conf} "$syswideconfig"
 
 # TODO: update script with CORRECT vpn-client.conf file, reflecting username, etc.
 # sed '/^cert/d' wiredtree.conf > wiredtree.conf2
 # sed '/^key/d' wiredtree.conf > wiredtree.conf2
-sed 's/
+# sed 's/
+
+# add infra hosts to hosts file
+cat $clientdir/hosts >> /etc/hosts
+
+# Add the default route w/out breaking old default
+ip r add 0.0.0.0 via 172.18.254.1 dev tap0
 
 
-[[ -z "/etc/systemd/system/wiredtreeVPN.service" ]]
-cp wiredtreeVPN.service /etc/systemd/system
+[[ -z "/etc/systemd/system/wiredtreeVPN.service" ]] || cp wiredtreeVPN.service /etc/systemd/system
 
 systemctl enable wiredtreeVPN.service
 sleep 1
