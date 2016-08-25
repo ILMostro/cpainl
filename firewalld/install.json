@@ -1,0 +1,1 @@
+[{"order":"99","id":"firewall","name":"Firewall","type":"group"},{"type":"link","name":"firewalld","featuremanager":true,"group_id":"firewall","id":"firewalld","target":"_blank","uri":"index.html","order":"22","icon":"firewalld.png"}]
